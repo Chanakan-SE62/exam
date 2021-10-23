@@ -1,8 +1,8 @@
 const  sql = require("./db");   
 
 //Create Constructor
-const User = function(user) {    //รับพารามิเตอร์ หรืออ็อบเจ็กมา
-    this.id = user.id;    //Attributes
+const User = function(user) {
+    this.id = user.id;
     this.username = user.username; 
     this.email = user.email;
     this.tel = user.tel;
@@ -10,10 +10,10 @@ const User = function(user) {    //รับพารามิเตอร์ �
 
 //Method
 //Insert Data
-User.create = (newUser, result) => {    //รับnewUserตัวใหม่เข้ามา
-    //INSERT INTO restaurants SET id, name, type, imageurl Values ("1", "KFC", "Fastfood", "url")
-    sql.query("INSERT INTO user SET ?", newUser, (err, res)=>{ //เพิ่มdata //? = ค่าที่ใส่เข้ามา //ดักerror
-        if(err) {        //ถ้ามีerror
+User.create = (newUser, result) => {
+    
+    sql.query("INSERT INTO user SET ?", newUser, (err, res)=>{
+        if(err) {
             console.log("error", err);
             result(err, null);
             return;
@@ -24,29 +24,29 @@ User.create = (newUser, result) => {    //รับnewUserตัวใหม่�
 };
 
 //Get Data By ID
-User.getById = (userId, result) => {    //1ร้าน
-    //ซินแทคของคิวรี่ในsql -> SELECT * FROM restaurants WHERE id = restaurantId
+User.getById = (userId, result) => {
+    
     sql.query(
         `SELECT * FROM user WHERE id = ${userId}`,
         (err, res) => {
-            if (err) {    //เกิดerror
-                console.log("error: ", err);    //แสดงว่า error
-                result(err, null);  //ส่งค่าdataเป็นnull
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
                 return;
             }
-            if (res.length) {  //หาเจอ มีค่าไม่เท่ากับ0
-                result(null, res[0]);  //ตัวdataต้องส่งresกลับไป [แค่แถวแรกเเถวเดียว]
+            if (res.length) {
+                result(null, res[0]);
                 return;
             }
-            //Restaurant not found with this id
-            result({ kind: "not_found" }, null);    //ไม่เข้าเลย หาidไม่เจอ
+            
+            result({ kind: "not_found" }, null);
         }
     );
 };   
 
 //Get all Restaurant
-User.getAll = (result) => { //เอามาทั้งหมด
-    //SELECT * FROM restaurants
+User.getAll = (result) => {
+    
     sql.query("SELECT * FROM user", (err, res) => {
         if (err) {
             console.log("error: ", err);
@@ -57,29 +57,29 @@ User.getAll = (result) => { //เอามาทั้งหมด
     });
 };   
 
-User.updateById = (id, user, result) => { //อัพเดต   
-    //UPDATE restaurants SET name = "name", type = "type", imageurl = "imageurl" WHERE id = "id"
+User.updateById = (id, user, result) => {
+    
     sql.query("UPDATE user SET username=?, email=?, tel=? WHERE id=?", 
         [user.username, user.email, user.tel, id],
         (err, res) => {
-            if (err) {    //เกิดerror
-                console.log("error: ", err);    //แสดงว่า error
-                result(err, null);  //ส่งค่าdataเป็นnull
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
                 return;
             }
-            if (res.affectedRows == 0) {  //ถ้าเท่ากับ0 ไม่มีการอัพเดตข้อมูล    //ใส่ไอดีที่ไม่มี
-                result({ kind: "not_found" });  //แสดงว่า not_found
+            if (res.affectedRows == 0) {
+                result({ kind: "not_found" });
                 return;
             }
-            //Restaurant data is updated
+            
             result(null, { id: id, ...user });    
         }
     );
 };   
 
 //Delete Restaurant by Id
-User.removeById = (id, result) => {     //ลบทีละอัน
-    //DELETE FROM restaurants WHERE id = ?
+User.removeById = (id, result) => {
+    
     sql.query("DELETE FROM user WHERE id = ?", id, (err, res) => {
         if(err) {
             console.log("error : ", err)
@@ -95,6 +95,6 @@ User.removeById = (id, result) => {     //ลบทีละอัน
     });
 };   
 
-User.removeAll = () => {} //ลบหมด
+User.removeAll = () => {}
 
 module.exports = User;

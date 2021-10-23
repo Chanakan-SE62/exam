@@ -4,17 +4,18 @@ const init = async () =>{
     if(id){
         try{
             const user = await fetch(
-                "http://localhost:5000/apis/user/" + id,{ //ต่อไอดีที่ส่งมาจากการกำปุ่ม Edit
+                "http://localhost:5000/apis/user/" + id,{
                 method: "GET",      
                 mode:"cors",
-                cache:"no-cache",              //6-8 บอกว่า server อยู่ที่เดียวกัน
+                cache:"no-cache",
                 credentals:"same-origin",
                 headers:{
-                    "Content-type":"application/json"  //ข้อมุลอยู่ในรูปแยย json
+                    "Content-type":"application/json"
                 },
             }).then((response)=>{
-                return response.json();  //ส่งค่าในรูปแบบ json
+                return response.json();
             });
+
             //set input value 19-22
             document.getElementById("id").value = user.id;
             document.getElementById("username").value = user.username;
@@ -27,7 +28,6 @@ const init = async () =>{
         alert("User ID is missing");
     }
 }
-
 
 const edit = async () => {
     const id = document.getElementById("id").value;
@@ -49,7 +49,7 @@ const edit = async () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(params), // เพิ่ม data
+            body: JSON.stringify(params),
           }
         ).then((response) => {
           return response.json();

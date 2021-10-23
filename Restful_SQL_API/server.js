@@ -8,8 +8,8 @@ const app = express();
 
 //Use Middleware
 app.use(cors());
-app.use(express.json());                                //ให้อ่านjsonได้
-app.use(express.urlencoded({ extended: false }));       //ไม่ต้องเข้ารหัสurl
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 //Router
 app.get("/", (req, res) => {

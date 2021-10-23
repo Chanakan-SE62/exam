@@ -1,9 +1,9 @@
-const express = require('express'); //เรียกใช้ฟังก์ชัน express
-const router = express.Router();   //เรียกใช้ฟังก์ชัน router
+const express = require('express');
+const router = express.Router();
 const Restaurant = require("../models/restaurant.model");
 
-//http://localhost:5000/apis/restaurants    //แบบPOST
-router.post("/restaurants", (req, res) => { //เรียกใช้ฟังก์ชันที่อยู่ในโมเดล
+
+router.post("/restaurants", (req, res) => {
     //Create a restaurant
     const newRestaurant = new Restaurant({
         name: req.body.name,
@@ -12,7 +12,7 @@ router.post("/restaurants", (req, res) => { //เรียกใช้ฟัง�
     });
 
     //Save to Database
-    Restaurant.create(newRestaurant, (err, data)=>{ //ถ้าสำเร็จจะส่งมาให้ 
+    Restaurant.create(newRestaurant, (err, data)=>{
         if(err)
             res.status(500).send({
                 message:
@@ -23,17 +23,17 @@ router.post("/restaurants", (req, res) => { //เรียกใช้ฟัง�
 });
 
 //Get restaurant by Id
-//http://localhost:5000/apis/restaurants/1    //แบบGET
+//http://localhost:5000/apis/restaurants/1
 router.get("/restaurants/:id", (req, res) => {
     const restaurantId = Number.parseInt(req.params.id);
-    Restaurant.getById(restaurantId, (err, data) => {     //เรียกใช้ออบเจ็กต์
-        if (err) {    //ถ้ามีerror
-            if (err.kind === 'not_found') {   //ถ้าเจอnot_found ส่งข้อความนี้กลับมา
+    Restaurant.getById(restaurantId, (err, data) => {
+        if (err) {
+            if (err.kind === 'not_found') {
                 res.status(404).send({
                     message : `Restaurant not found with this id ${restaurantId}`,
                 });
             } else {
-                res.sendStatus(500).send({  //ถ้าเกิดerror500 ส่งข้อความนี้กลับมา 
+                res.status(500).send({
                     message : "Error retrieving with this id " + restaurantId,
                 });
             }
@@ -44,12 +44,12 @@ router.get("/restaurants/:id", (req, res) => {
 });
 
 //Get all restaurant 
-//http://localhost:5000/apis/restaurants    //แบบGET
+//http://localhost:5000/apis/restaurants
 router.get('/restaurants', (req, res) => {
     Restaurant.getAll((err, data) => {
         if (err) {
             res.status(500).send({
-                message : err.message || "Come error occurred while retrieving restaurant",    //ถ้ามีจะเอามาโชว์ หรือ ถ้าระบบไม่บอกerrorอะไร จะขึ้นข้อความนี้
+                message : err.message || "Come error occurred while retrieving restaurant",
             });
         } else {
             res.send(data);
@@ -57,46 +57,48 @@ router.get('/restaurants', (req, res) => {
     });
 });
 
-//Update restaurant data
-//http://localhost:5000/apis/restaurants/1    //แบบPUT
-router.put("/restaurants/:id", (req, res) => {
-    const restaurantId = Number.parseInt(req.params.id);
-    //Check empty body
-        if (req.body.constructor === Object && Object.keys(req.body).lenght === 0) {    //เช็คว่าbodyเป็นออบเจ็กต์มั้ย เช็คว่าเท่ากับ0มั้ย ถ้า0ไม่มีค่าข้างใน
-            res.status(404).send({
-                message : "Content can not be empty !",
-            });
-        }
-        Restaurant.updateById(restaurantId, new Restaurant(req,body), (err, data) => {
-            if (err) {    //ถ้ามีerror
-                if (err.kind === "not_found") {   //ถ้าเจอnot_found ส่งข้อความนี้กลับมา
-                    res.status(404).send({
-                        message : `Restaurant not found with this id ${restaurantId}`,
-                    });
-                } else {
-                    res.status(500).send({  //ถ้าเกิดerror500 ส่งข้อความนี้กลับมา 
-                        message : 
-                            "Error updating restaurant data with this id " + restaurantId,
-                    });
-                }
-            } else {
-                res.send(data);
+//Updata restaurant Data
+// http://localhost:5000/apis/restaurants/1
+router.put("/restaurants/:id",(req, res)=>{
+    const restaurantId = Number.parseInt(req.params.id);  //แปลงให้เป็นจำนวนเต็ม
+
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0){//เช็คค่าว่าง
+        res.status(400).send({
+            message : "Content can not empty"
+        });
+    }
+    Restaurant.updateById(restaurantId, new Restaurant(req.body), (err,data)=>{
+        if(err){
+            if(err.kind === "not_found"){
+                res.status(404).send({
+                    message: `Restaurant not found with this id ${restaurantId}`,
+                });
             }
-    });  
+            else{
+            res.status(500).send({
+                message: "Error updating restaurant data with this id " + restaurantId,
+            });
+            }
+        }
+        else
+        {
+            res.send(data);
+        }
+    });
 });
 
 //Delete restaurant data
-//http://localhost:5000/apis/restaurants/1    //แบบDELETE
+//http://localhost:5000/apis/restaurants/1
 router.delete("/restaurants/:id", (req,res) => {
     const restaurantId = Number.parseInt(req.params.id);
     Restaurant.removeById(restaurantId, (err, data) => {
-        if (err) {    //ถ้ามีerror
-            if (err.kind === 'not_found') {   //ถ้าเจอnot_found ส่งข้อความนี้กลับมา
+        if (err) {
+            if (err.kind === 'not_found') {
                 res.status(404).send({
                     message : `Restaurant not found with this id ${restaurantId}`,
                 });
             } else {
-                res.status(500).send({  //ถ้าเกิดerror500 ส่งข้อความนี้กลับมา 
+                res.status(500).send({
                     message : 
                         "Error deleting restaurant data with this id " + restaurantId,
                 });

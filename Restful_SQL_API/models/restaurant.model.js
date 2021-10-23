@@ -1,8 +1,8 @@
 const  sql = require("./db");   
 
 //Create Constructor
-const Restaurant = function(restaurant) {    //รับพารามิเตอร์ หรืออ็อบเจ็กมา
-    this.id = restaurant.id;    //Attributes
+const Restaurant = function(restaurant) {
+    this.id = restaurant.id;
     this.name = restaurant.name; 
     this.type = restaurant.type; 
     this.imageurl = restaurant.imageurl; 
@@ -10,10 +10,10 @@ const Restaurant = function(restaurant) {    //รับพารามิเต
 
 //Method
 //Insert Data
-Restaurant.create = (newRestaurant, result) => {    //รับnewRestaurantตัวใหม่เข้ามา
-    //INSERT INTO restaurants SET id, name, type, imageurl Values ("1", "KFC", "Fastfood", "url")
-    sql.query("INSERT INTO restaurants SET ?", newRestaurant, (err, res)=>{ //เพิ่มdata //? = ค่าที่ใส่เข้ามา //ดักerror
-        if(err) {        //ถ้ามีerror
+Restaurant.create = (newRestaurant, result) => {
+    
+    sql.query("INSERT INTO restaurants SET ?", newRestaurant, (err, res)=>{
+        if(err) {
             console.log("error", err);
             result(err, null);
             return;
@@ -24,29 +24,29 @@ Restaurant.create = (newRestaurant, result) => {    //รับnewRestaurantต�
 };
 
 //Get Data By ID
-Restaurant.getById = (restaurantId, result) => {    //1ร้าน
-    //ซินแทคของคิวรี่ในsql -> SELECT * FROM restaurants WHERE id = restaurantId
+Restaurant.getById = (restaurantId, result) => {
+    
     sql.query(
         `SELECT * FROM restaurants WHERE id = ${restaurantId}`,
         (err, res) => {
-            if (err) {    //เกิดerror
-                console.log("error: ", err);    //แสดงว่า error
-                result(err, null);  //ส่งค่าdataเป็นnull
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
                 return;
             }
-            if (res.length) {  //หาเจอ มีค่าไม่เท่ากับ0
-                result(null, res[0]);  //ตัวdataต้องส่งresกลับไป [แค่แถวแรกเเถวเดียว]
+            if (res.length) {
+                result(null, res[0]);
                 return;
             }
-            //Restaurant not found with this id
-            result({ kind: "not_found" }, null);    //ไม่เข้าเลย หาidไม่เจอ
+            
+            result({ kind: "not_found" }, null);
         }
     );
 };   
 
 //Get all Restaurant
 Restaurant.getAll = (result) => { //เอามาทั้งหมด
-    //SELECT * FROM restaurants
+    
     sql.query("SELECT * FROM restaurants", (err, res) => {
         if (err) {
             console.log("error: ", err);
@@ -55,31 +55,32 @@ Restaurant.getAll = (result) => { //เอามาทั้งหมด
         }
         result(null, res);
     });
-};   
+};
 
-Restaurant.updateById = (id, restaurant, result) => { //อัพเดต   
-    //UPDATE restaurants SET name = "name", type = "type", imageurl = "imageurl" WHERE id = "id"
+//Update Restaurant by Id
+Restaurant.updateById = (id, restaurant, result) => { 
+    
     sql.query("UPDATE restaurants SET name=?, type=?, imageurl=? WHERE id=?", 
         [restaurant.name, restaurant.type, restaurant.imageurl, id],
         (err, res) => {
-            if (err) {    //เกิดerror
-                console.log("error: ", err);    //แสดงว่า error
-                result(err, null);  //ส่งค่าdataเป็นnull
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
                 return;
             }
-            if (res.affectedRows == 0) {  //ถ้าเท่ากับ0 ไม่มีการอัพเดตข้อมูล    //ใส่ไอดีที่ไม่มี
-                result({ kind: "not_found" });  //แสดงว่า not_found
+            if (res.affectedRows == 0) {
+                result({ kind: "not_found" });
                 return;
             }
-            //Restaurant data is updated
+            
             result(null, { id: id, ...restaurant });    
         }
     );
-};   
+};
 
 //Delete Restaurant by Id
-Restaurant.removeById = (id, result) => {     //ลบทีละอัน
-    //DELETE FROM restaurants WHERE id = ?
+Restaurant.removeById = (id, result) => {
+    
     sql.query("DELETE FROM restaurants WHERE id = ?", id, (err, res) => {
         if(err) {
             console.log("error : ", err)
@@ -95,6 +96,6 @@ Restaurant.removeById = (id, result) => {     //ลบทีละอัน
     });
 };   
 
-Restaurant.removeAll = () => {} //ลบหมด
+Restaurant.removeAll = () => {}
 
 module.exports = Restaurant;

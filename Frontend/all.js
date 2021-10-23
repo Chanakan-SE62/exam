@@ -1,24 +1,24 @@
-const init = async () => {   //ดึงข้อมูลมา
+const init = async () => {
     const allRestaurants = await fetch("http://localhost:5000/apis/restaurants", {
-    //ดึงมาทั้งหมดใช้GET
-    method: "GET", //เข้าถึง data โดยใช้GET
+    
+    method: "GET",
     mode: "cors", 
-    cache: "no-cache", //ไม่ต้องเก็บ cache
+    cache: "no-cache",
     credentials: "same-origin",
     headers: { 
         "Content-Type": "application/json",
     },
     }).then((response) => response.json());
-    allRestaurants.forEach((element) => addRestaurant(element)); //ลูป data array ให้ครบ ส่งไปที่ addRestaurant
+    allRestaurants.forEach((element) => addRestaurant(element));
 
     //allRestaurants.restaurants.forEach((element) => addRestaurant(element));
 };
 
 const addRestaurant = (element) => {
-    const item = document.createElement("div"); //สร้างแท็กdiv
-    item.className = "card";//กำหนดclassName
-    item.style = "width: 20rem;";//กำหนดstyle
-    //รูป, ชื่อ //ชนิดร้านอาหาร //ประเภทอาหาร //ปุ่มลบ(ลบจากid) //ปุ่มแก้ไข(ส่งผ่านคิวรี่สตริง เป็นลิงค์พร้อมกับส่งหมายเลขไอดีไปด้วย) 
+    const item = document.createElement("div");
+    item.className = "card";
+    item.style = "width: 20rem;";
+    
     const card = `
                 <img src="${element.imageurl}" class="card-img-top" alt="${element.name}">  
                 <div class="card-body">
@@ -29,36 +29,36 @@ const addRestaurant = (element) => {
                 </div>
     `;
     item.innerHTML = card;
-    const restaurantsElement = document.querySelector(".restaurants");  //เข้าถึงหน้าเว็บ
-    restaurantsElement.appendChild(item);   //เพิ่มnode รูป
+    const restaurantsElement = document.querySelector(".restaurants");
+    restaurantsElement.appendChild(item);
 };
 
 const deleteRestaurant = async (id) => {
-    if (id) {   //ถ้ามีid
+    if (id) {
         try {
             const restaurant = await fetch(
             "http://localhost:5000/apis/restaurants/" + id,
             {
-                method: "DELETE",                      //เข้าถึงmethod ชื่อDELETE
-                mode: "cors",                           //modeชื่อ cors
-                cache: "no-cache",                      //ไม่ต้องเก็บ cache
+                method: "DELETE",
+                mode: "cors",
+                cache: "no-cache",
                 credentials: "same-origin",
                 headers: { 
                     "Content-Type": "application/json",
                 },
             }
             )
-                .then((response) => {                   //แปลงเป็น json
-                return response.json();                 //มี{ } ต้องมีreturn
+                .then((response) => {
+                return response.json();
                 })
-                .then((response) => {                           //แสดงผล
-                alert(`Restaurant id:${id} is delete`);     //กล่องแจ้งเตือนข้อความด้านบน
+                .then((response) => {
+                alert(`Restaurant id:${id} is delete`);
                 location.reload();
                 });
         } catch (error) {
-            alert(`Restaurant id:${id} not found`);     //กล่องแจ้งเตือนข้อความด้านบน
+            alert(`Restaurant id:${id} not found`);
         }
-    } else {  //ถ้าไม่มี
-        alert("Restaurant ID is missing");   //กล่องแจ้งเตือนข้อความด้านบนว่า "Restaurant ID is missing"
+    } else {
+        alert("Restaurant ID is missing");
     }
 };
