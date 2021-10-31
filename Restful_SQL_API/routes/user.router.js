@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/user_model");
 
 //http://localhost:5000/apis/restaurants
-router.post("/user", (req, res) => {
+router.post("/user", (req, res) => { //สร้าง
     //Create a restaurant
     const newUser = new User({
         username: req.body.username,
@@ -24,8 +24,9 @@ router.post("/user", (req, res) => {
 
 //Get restaurant by Id
 //http://localhost:5000/apis/restaurants/1
-router.get("/user/:id", (req, res) => {
-    const userId = Number.parseInt(req.params.id);
+router.get("/user/:id", (req, res) => { //เรียกดูจาก id
+    //แปลงจาก string ไปเป็นเลข
+    const userId = Number.parseInt(req.params.id); //แปลงให้เป็นจำนวนเต็ม
     User.getById(userId, (err, data) => {
         if (err) {
             if (err.kind === 'not_found') {
@@ -45,7 +46,7 @@ router.get("/user/:id", (req, res) => {
 
 //Get all restaurant 
 //http://localhost:5000/apis/restaurants
-router.get('/user', (req, res) => {
+router.get('/user', (req, res) => { //เรียกดูทั้งหมด
     User.getAll((err, data) => {
         if (err) {
             res.status(500).send({
@@ -59,9 +60,10 @@ router.get('/user', (req, res) => {
 
 //Updata restaurant Data
 // http://localhost:5000/apis/restaurants/1
-router.put("/user/:id",(req, res)=>{
+router.put("/user/:id",(req, res)=>{ //อัพเดต จาก id
     const userId = Number.parseInt(req.params.id);
 
+    //เช็คค่าว่าง
     if(req.body.constructor === Object && Object.keys(req.body).length === 0){
         res.status(400).send({
             message : "Content can not empty"
@@ -89,7 +91,7 @@ router.put("/user/:id",(req, res)=>{
 
 //Delete restaurant data
 //http://localhost:5000/apis/restaurants/1
-router.delete("/user/:id", (req,res) => {
+router.delete("/user/:id", (req,res) => { //ลบ จาก id
     const userId = Number.parseInt(req.params.id);
     User.removeById(userId, (err, data) => {
         if (err) {

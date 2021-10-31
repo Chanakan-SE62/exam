@@ -4,7 +4,7 @@ const restaurantRouter = require("./routes/restaurant.router");
 const userRoutes = require("./routes/user.router");
 
 //Create Server
-const app = express();
+const app = express(); 
 
 //Use Middleware
 app.use(cors());

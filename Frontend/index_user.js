@@ -1,3 +1,4 @@
+
 const deleteUser = async (id) => {
     if (id) {
         try {
@@ -55,10 +56,10 @@ const removeAllResult = () => {
     userElement.innerHTML = "";
 };
 
-const searchUser = async(event) => {
-    const keyword = event.target.value;
-    if (event.key === "Enter" && keyword) {
-        const allUsers = await fetch(
+const searchUser = async(event) => { //เมื่อเกิด event
+    const keyword = event.target.value; //เอาข้อมูลมาใส่ในตัวแปลชื่อ keyword
+    if (event.key === "Enter" && keyword) { //เมื่อถูก enter และมี keyword แล้ว
+        const allUsers = await fetch( //เชื่อมต่อ api
             "http://localhost:5000/apis/user/",
             {   
             method: "GET",
@@ -69,23 +70,23 @@ const searchUser = async(event) => {
                 "Content-Type": "application/json",
             },
         }).then((response) => {
-            return response.json();
+            return response.json(); //รีเทิร์นค่า response เป็น json
         });
 
         //console.log(allRestaurant);
-        const result = allUsers.filter(
-            (item) => item.username.includes(keyword)
+        const result = allUsers.filter( //กรองข้อมูล
+            (item) => item.username.includes(keyword) //จาก keyword ที่พิมพ์มา แล้วเอาไปเทียบกับค่า username
         );
 
         //console.log(result);
-        removeAllResult();
-        result.forEach((element) => addUser(element));
+        removeAllResult(); //เรียกใช้ฟังก์ชัน removeAllResult ก่อน
+        result.forEach((element) => addUser(element)); //สั่งลูป element แล้วเรียกใช้ addUser
     }
 };
 
 const main = () => {
-    const inputElement = document.querySelector(".search");
-    inputElement.addEventListener("keydown", searchUser);
+    const inputElement = document.querySelector(".search"); //ดึงข้อมูลจากช่อง search
+    inputElement.addEventListener("keydown", searchUser); //เรียกใช้ฟังก์ชัน searchUser เมื่อพิมพ์
 };
 
 main();
